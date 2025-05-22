@@ -1,0 +1,51 @@
+name: Grace AutoBuilder
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Lint with Black
+        run: |
+          pip install black
+          black --check .
+
+      - name: Type check with MyPy
+        run: |
+          pip install mypy
+          mypy .
+
+      - name: Run Pytest
+        run: |
+          pip install pytest
+          pytest
+
+      - name: Archive build (optional)
+        if: success()
+        run: |
+          zip -r grace_build_output.zip . -x "*.git*" "*.venv*" "__pycache__"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: grace-build
+          path: grace_build_output.zip
