@@ -1,0 +1,7 @@
+# Add to parse_args() function
+train_parser = subparsers.add_parser("train", help="Train Grace on documents")
+train_parser.add_argument("--source", required=True, help="Source directory or file to train on")
+train_parser.add_argument("--save", help="Path to save knowledge base")
+train_parser.add_argument("--recursive", action="store_true", help="Recursively process directories")
+train_parser.add_argument("--report", action="store_true", help="Generate training report")
+train_parser.add_argument("--snapshot", action="store_true", help="Create versioned snapshots")
